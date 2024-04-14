@@ -20,6 +20,7 @@ public class CustomerDto {
     private String loanAmount;
     private String loanPeriod;
     private byte[] adharFile;
+    private String userId;
     // private MultipartFile panCard;
     // private MultipartFile paymentSlip;
 

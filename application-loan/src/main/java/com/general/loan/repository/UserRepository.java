@@ -16,4 +16,6 @@ public interface UserRepository extends MongoRepository<UserEntity, String> {
 
     public List<UserEntity> findAllByUserTypeAndStatus(UserEntity.UserType userType, String status);
 
+
+
 }

@@ -2,7 +2,10 @@ package com.general.loan.service;
 
 import com.general.loan.dto.CustomerDto;
 import com.general.loan.entity.CustomerEntity;
+import com.general.loan.entity.UserEntity;
+import com.general.loan.exception.UserDoesNotExist;
 import com.general.loan.repository.CustomerRepository;
+import com.general.loan.repository.UserRepository;
 import com.general.loan.util.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +22,11 @@ public class CustomerService {
     @Autowired
     CustomerRepository customerRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+    public static final String ACTIVE = "ACTIVE";
+
 
     public String saveCustomer(CustomerDto customerDto) {
 
@@ -27,6 +35,7 @@ public class CustomerService {
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setBirthDate(customerDto.getBirthDate());
+        customer.setUserId(customerDto.getUserId());
 //        customer.setMobileNumber(customerDto.getMobileNumber());
 //        customer.setEmailId(customerDto.getEmailId());
 //        customer.setCity(customerDto.getCity());
@@ -87,7 +96,10 @@ public class CustomerService {
             customerDto.setLoanPurpose(customer.getLoanPurpose());
             customerDto.setLoanAmount(customer.getLoanAmount());
             customerDto.setLoanPeriod(customer.getLoanPeriod());
-            customerDto.setAdharFile(ImageUtils.decompressImage(customer.getAdharFile()));
+            if(customer.getAdharFile() != null) {
+                customerDto.setAdharFile(ImageUtils.decompressImage(customer.getAdharFile()));
+            }
+            customerDto.setUserId(customer.getUserId());
             customerDtos.add(customerDto);
 
         });
@@ -95,9 +107,14 @@ public class CustomerService {
     }
 
     public List<CustomerDto> getCustomerByAgentId(String userId) {
+        Optional<UserEntity> byUserIdAndStatus = userRepository.findByUserIdAndStatus(userId, ACTIVE);
+        if(!byUserIdAndStatus.isPresent()){
+            throw new UserDoesNotExist("invalid agent");
+        }
         List<CustomerEntity> byUserId = customerRepository.findByUserId(userId);
         return constructCustomerDtoList(byUserId);
     }
+
 
 
 }
