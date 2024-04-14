@@ -93,4 +93,11 @@ public class CustomerService {
         });
         return customerDtos;
     }
+
+    public List<CustomerDto> getCustomerByAgentId(String userId) {
+        List<CustomerEntity> byUserId = customerRepository.findByUserId(userId);
+        return constructCustomerDtoList(byUserId);
+    }
+
+
 }

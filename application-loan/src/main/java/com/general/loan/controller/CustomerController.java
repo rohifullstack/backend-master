@@ -36,4 +36,9 @@ public class CustomerController {
         return customerService.getAllCustomer();
     }
 
+    @GetMapping("/customerByAgentId/{userId}")
+    public List<CustomerDto> getCustomerByAgentId(@PathVariable("userID") String userId) {
+        return customerService.getCustomerByAgentId(userId);
+    }
+
 }
